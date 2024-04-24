@@ -9,7 +9,7 @@ const pool = new Pool({
     host: 'localhost',
     database: 'signos',
     password: 'ds564',
-    port: '5432'
+    port: '7007'
 })
 
 function calcularIdade(dataNascimento) {
@@ -82,9 +82,10 @@ app.post('/usuario', async (req, res) => {
     try {
       const { id } = req.params;
       const { nome, sobrenome, data_nascimento, email, cor_fav} = req.body;
-      const idade = calcularIdade(data_nascimento);
-      const signo = calcularSigno(data_nascimento.getMonth() + 1, data_nascimento.getDate());
-      await pool.query('UPDATE usuario SET nome = $1, sobrenome =$2, data_nascimento = $3, sidno = $4, idade = $5, email = $6, cor_fav = $7 WHERE id = $8', [nome, sobrenome, data_nascimento, signo, idade, email, cor_fav, id]);
+      const dataNascimento = new Date(data_nascimento);
+      const idade = calcularIdade(dataNascimento);
+      const signo = calcularSigno(dataNascimento.getMonth() + 1, dataNascimento.getDate());
+      await pool.query('UPDATE usuario SET nome = $1, sobrenome =$2, data_nascimento = $3, signo = $4, idade = $5, email = $6, cor_fav = $7 WHERE id = $8', [nome, sobrenome, data_nascimento, signo, idade, email, cor_fav, id]);
       res.status(200).send({ mensagem: 'Usuário atualizado com sucesso'});
     } catch (error) {
       console.error('Erro ao atualizar usuário:', error);
